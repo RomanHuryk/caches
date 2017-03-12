@@ -1,5 +1,10 @@
-# VS Code
+.DS_Store
+.sass-cache
+*.*~
+*.user
+.idea/
+*.log
+tests/
 .vscode/
+cmake-build-debug/
 
-# CMake build folder
-build/
