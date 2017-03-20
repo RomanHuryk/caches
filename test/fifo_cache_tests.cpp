@@ -5,7 +5,8 @@
 template <typename Key, typename Value>
 using fifo_cache_t = typename caches::fixed_sized_cache<Key, Value, caches::FIFOCachePolicy<Key>>;
 
-TEST(FIFOCache, Simple_Test) {
+TEST(FIFOCache, Simple_Test)
+{
   fifo_cache_t<int, int> fc(2);
 
   fc.Put(1, 10);
@@ -20,12 +21,18 @@ TEST(FIFOCache, Simple_Test) {
   EXPECT_EQ(fc.Get(1), 30);
 
   fc.Put(3, 30);
+
   EXPECT_THROW(fc.Get(1), std::range_error);
+
   EXPECT_EQ(fc.Get(2), 20);
   EXPECT_EQ(fc.Get(3), 30);
+
+  fc.Clear();
+  EXPECT_EQ(fc.Size(), 0);
 }
 
-TEST(FIFOCache, Missing_Value) {
+TEST(FIFOCache, Missing_Value)
+{
   fifo_cache_t<int, int> fc(2);
 
   fc.Put(1, 10);
@@ -35,36 +42,43 @@ TEST(FIFOCache, Missing_Value) {
   EXPECT_THROW(fc.Get(2), std::range_error);
 }
 
-TEST(FIFOCache, Sequence_Test) {
+TEST(FIFOCache, Sequence_Test)
+{
   constexpr int TEST_SIZE = 10;
   fifo_cache_t<std::string, int> fc(TEST_SIZE);
 
-  for (size_t i = 0; i < TEST_SIZE; ++i) {
+  for (size_t i = 0; i < TEST_SIZE; ++i)
+  {
     fc.Put(std::to_string('0' + i), i);
   }
 
   EXPECT_EQ(fc.Size(), TEST_SIZE);
 
-  for (size_t i = 0; i < TEST_SIZE; ++i) {
+  for (size_t i = 0; i < TEST_SIZE; ++i)
+  {
     EXPECT_EQ(fc.Get(std::to_string('0' + i)), i);
   }
 
   // replace a half
-  for (size_t i = 0; i < TEST_SIZE / 2; ++i) {
+  for (size_t i = 0; i < TEST_SIZE / 2; ++i)
+  {
     fc.Put(std::to_string('a' + i), i);
   }
 
   EXPECT_EQ(fc.Size(), TEST_SIZE);
 
-  for (size_t i = 0; i < TEST_SIZE / 2; ++i) {
+  for (size_t i = 0; i < TEST_SIZE / 2; ++i)
+  {
     EXPECT_THROW(fc.Get(std::to_string('0' + i)), std::range_error);
   }
 
-  for (size_t i = 0; i < TEST_SIZE / 2; ++i) {
+  for (size_t i = 0; i < TEST_SIZE / 2; ++i)
+  {
     EXPECT_EQ(fc.Get(std::to_string('a' + i)), i);
   }
 
-  for (size_t i = TEST_SIZE / 2; i < TEST_SIZE; ++i) {
+  for (size_t i = TEST_SIZE / 2; i < TEST_SIZE; ++i)
+  {
     EXPECT_EQ(fc.Get(std::to_string('0' + i)), i);
   }
 }

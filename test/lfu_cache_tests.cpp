@@ -5,25 +5,30 @@
 template <typename Key, typename Value>
 using lfu_cache_t = typename caches::fixed_sized_cache<Key, Value, caches::LFUCachePolicy<Key>>;
 
-TEST(LFUCache, Simple_Test) {
+TEST(LFUCache, Simple_Test)
+{
   constexpr size_t FIRST_FREQ = 10;
   constexpr size_t SECOND_FREQ = 9;
   constexpr size_t THIRD_FREQ = 8;
+
   lfu_cache_t<std::string, int> cache(3);
 
   cache.Put("A", 1);
   cache.Put("B", 2);
   cache.Put("C", 3);
 
-  for (size_t i = 0; i < FIRST_FREQ; ++i) {
+  for (size_t i = 0; i < FIRST_FREQ; ++i)
+  {
     EXPECT_EQ(cache.Get("B"), 2);
   }
 
-  for (size_t i = 0; i < SECOND_FREQ; ++i) {
+  for (size_t i = 0; i < SECOND_FREQ; ++i)
+  {
     EXPECT_EQ(cache.Get("C"), 3);
   }
 
-  for (size_t i = 0; i < THIRD_FREQ; ++i) {
+  for (size_t i = 0; i < THIRD_FREQ; ++i)
+  {
     EXPECT_EQ(cache.Get("A"), 1);
   }
 
@@ -32,16 +37,23 @@ TEST(LFUCache, Simple_Test) {
   EXPECT_EQ(cache.Get("B"), 2);
   EXPECT_EQ(cache.Get("C"), 3);
   EXPECT_EQ(cache.Get("D"), 4);
+
   EXPECT_THROW(cache.Get("A"), std::range_error);
+
+  cache.Clear();
+  EXPECT_EQ(cache.Size(), 0);
+
 }
 
-TEST(LFUCache, Single_Slot) {
+TEST(LFUCache, Single_Slot)
+{
   constexpr size_t TEST_SIZE = 5;
   lfu_cache_t<int, int> cache(1);
 
   cache.Put(1, 10);
 
-  for (size_t i = 0; i < TEST_SIZE; ++i) {
+  for (size_t i = 0; i < TEST_SIZE; ++i)
+  {
     cache.Put(1, i);
   }
 
@@ -53,8 +65,10 @@ TEST(LFUCache, Single_Slot) {
   EXPECT_EQ(cache.Get(2), 20);
 }
 
-TEST(LFUCache, FrequencyIssue) {
+TEST(LFUCache, FrequencyIssue)
+{
   constexpr size_t TEST_SIZE = 50;
+
   lfu_cache_t<int, int> cache(3);
 
   cache.Put(1, 10);
@@ -62,7 +76,8 @@ TEST(LFUCache, FrequencyIssue) {
   cache.Put(3, 2);
 
   // cache value with key '1' will have the counter 50
-  for (size_t i = 0; i < TEST_SIZE; ++i) {
+  for (size_t i = 0; i < TEST_SIZE; ++i)
+  {
     EXPECT_NO_THROW(cache.Get(1));
   }
 
